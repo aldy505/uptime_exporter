@@ -70,6 +70,48 @@ then it's up and healthy. If the value is 0, then it's down.
 `uptime_latency_seconds` indicates the time it took to do a HTTP request to that specified `endpoint_address`
 field in second.
 
+## Configuration file schema
+
+If you want to do config.json.
+
+```json
+{
+    "endpoints": [
+        {
+            "name": "string",
+            "address": "https://url",
+            "method": "GET",
+            "timeout": 123,
+            "successful_status_code": "2xx",
+            "inverse_status": false,
+            "tls_configuration": {
+                "certificate_authority_path": "/path/to/certificate_authority.pem",
+                "client_certificate_path": "/path/to/client_certificate.pem",
+                "client_key_path": "/path/to/client_key.pem",
+                "insecure_skip_verify": true
+            }
+        }
+    ]
+}
+```
+
+If you want to do config.yaml (or .yml if you prefer).
+
+```yaml
+endpoints:
+    - name: "string"
+      address: "https://url"
+      method: "GET"
+      timeout: 123
+      successful_status_code: 2xx
+      inverse_status: false
+      tls_configuration:
+        certificate_authority_path: "/path/to/certificate_authority.pem",
+        client_certificate_path: "/path/to/client_certificate.pem",
+        client_key_path: "/path/to/client_key.pem",
+        insecure_skip_verify: true
+```
+
 ## Build from source
 
 Install [Go](https://go.dev/dl).

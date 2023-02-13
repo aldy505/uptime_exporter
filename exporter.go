@@ -24,6 +24,7 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"net/http"
 	"strconv"
 	"sync"
@@ -54,7 +55,7 @@ var (
 )
 
 type Exporter struct {
-	Endpoints []Endpoint
+	Endpoints []PreprocessedEndpoint
 	Logger    *onelog.Logger
 }
 
@@ -106,7 +107,7 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	wg.Add(len(e.Endpoints))
 
 	for _, endpoint := range e.Endpoints {
-		go func(endpoint Endpoint) {
+		go func(endpoint PreprocessedEndpoint) {
 			defer wg.Done()
 
 			// Create HTTP calls
@@ -118,6 +119,13 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 
 			httpClient := http.Client{
 				Timeout: time.Duration(uint64(endpoint.Timeout) * 1e+9),
+				Transport: &http.Transport{
+					TLSClientConfig: &tls.Config{
+						Certificates:       endpoint.TLSConfiguration.Certificates,
+						RootCAs:            endpoint.TLSConfiguration.RootCA,
+						InsecureSkipVerify: endpoint.TLSConfiguration.InsecureSkipVerify,
+					},
+				},
 			}
 
 			response, err := httpClient.Do(request)

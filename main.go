@@ -49,14 +49,21 @@ func main() {
 	var config Configuration
 	err := configor.Load(&config, *configFile)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln(err.Error())
 	}
+
+	preprocessedConfig, err := processConfiguration(config.Endpoints)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+
+	log.Printf("%+v", preprocessedConfig)
 
 	// Initiate the logger instance. It should be zero-allocated, so we'll use onelog
 	logger := onelog.New(os.Stdout, onelog.ALL)
 
 	exporter := &Exporter{
-		Endpoints: config.Endpoints,
+		Endpoints: preprocessedConfig,
 		Logger:    logger,
 	}
 

@@ -23,6 +23,9 @@
 endpoints:
   - name: "GitHub"
     address: https://github.com/healthz
+    tls_configuration:
+      insecure_skip_verify: true
+
   - name: "Reinaldy"
     address: https://code.reinaldyrafli.com
     timeout: 60
